@@ -27,28 +27,29 @@ function App() {
 
   // Fetch Crypto Data from CoinGecko (Free, No API Key)
   useEffect(() => {
-    const fetchCryptoData = async () => {
-      try {
-        const response = await fetch(
-          'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=usd&include_24hr_change=true'
-        );
-        const data = await response.json();
-        if (data.bitcoin) {
-          setCryptos([
-            { id: 1, symbol: 'BTC', price: data.bitcoin.usd, change: data.bitcoin.usd_24h_change, changePercent: data.bitcoin.usd_24h_change.toFixed(2) },
-            { id: 2, symbol: 'ETH', price: data.ethereum.usd, change: data.ethereum.usd_24h_change, changePercent: data.ethereum.usd_24h_change.toFixed(2) },
-            { id: 3, symbol: 'SOL', price: data.solana.usd, change: data.solana.usd_24h_change, changePercent: data.solana.usd_24h_change.toFixed(2) },
-          ]);
-        }
-      } catch (error) {
-        console.log('Crypto API error - using mock data');
+  const fetchCryptoData = async () => {
+    try {
+      const response = await fetch(
+        'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=usd&include_24hr_change=true',
+        { headers: { 'Accept': 'application/json' } }
+      );
+      const data = await response.json();
+      console.log('Crypto data:', data); // Check if data is coming
+      if (data && data.bitcoin) {
+        setCryptos([
+          { id: 1, symbol: 'BTC', price: data.bitcoin.usd, change: data.bitcoin.usd_24h_change, changePercent: parseFloat(data.bitcoin.usd_24h_change).toFixed(2) },
+          { id: 2, symbol: 'ETH', price: data.ethereum.usd, change: data.ethereum.usd_24h_change, changePercent: parseFloat(data.ethereum.usd_24h_change).toFixed(2) },
+          { id: 3, symbol: 'SOL', price: data.solana.usd, change: data.solana.usd_24h_change, changePercent: parseFloat(data.solana.usd_24h_change).toFixed(2) },
+        ]);
       }
-    };
-    fetchCryptoData();
-    const interval = setInterval(fetchCryptoData, 60000);
-    return () => clearInterval(interval);
-  }, []);
-
+    } catch (error) {
+      console.error('Crypto API error:', error);
+    }
+  };
+  fetchCryptoData();
+  const interval = setInterval(fetchCryptoData, 60000);
+  return () => clearInterval(interval);
+}, []);
   // Initialize price history
   useEffect(() => {
     const history = {};
