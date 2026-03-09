@@ -24,9 +24,6 @@ function App() {
   const [showAddForm, setShowAddForm] = useState(false);
   const [hiddenAssets, setHiddenAssets] = useState(new Set());
   const [priceHistory, setPriceHistory] = useState({});
-  const [paperTrades, setPaperTrades] = useState([]);
-  const [portfolioValue, setPortfolioValue] = useState(10000);
-  const [loading, setLoading] = useState(false);
 
   // Fetch Crypto Data from CoinGecko (Free, No API Key)
   useEffect(() => {
@@ -48,7 +45,7 @@ function App() {
       }
     };
     fetchCryptoData();
-    const interval = setInterval(fetchCryptoData, 60000); // Update every minute
+    const interval = setInterval(fetchCryptoData, 60000);
     return () => clearInterval(interval);
   }, []);
 
@@ -65,7 +62,7 @@ function App() {
     };
     generateHistory([...stocks, ...cryptos, ...forexPairs]);
     setPriceHistory(history);
-  }, []);
+  }, [stocks, cryptos, forexPairs]);
 
   // Simulate price updates
   useEffect(() => {
